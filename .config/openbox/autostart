@@ -1,0 +1,5 @@
+#!/bin/bash
+# add specific daemons or apps for openbox
+
+# Start the session manager with the proper environment and session name
+lxsession -e openbox -s openbox &
