@@ -1,6 +1,10 @@
 #!/usr/bin/perl
+# archon-dotfiles
+# https://github.com/archon-linux/archon-dotfiles
+# @nekwebdev
+# LICENSE: GPLv3
+# config: obmenu-generator
 
-# obmenu-generator - configuration file
 # This file will be updated automatically.
 # Any additional comment and/or indentation will be lost.
 
@@ -47,7 +51,7 @@
 =cut
 
 our $CONFIG = {
-  "editor"              => "code",
+  "editor"              => "$ENV{VISUAL}",
   "force_icon_size"     => 0,
   "generic_fallback"    => 0,
   "gtk_rc_filename"     => "$ENV{HOME}/.config/gtk-3.0/settings.ini",

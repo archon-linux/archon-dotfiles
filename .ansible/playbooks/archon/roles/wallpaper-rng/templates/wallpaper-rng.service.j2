@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Randomly change the current wallpaper
+
+[Service]
+ExecStart={{ ansible_env.HOME }}/.local/scripts/wallpaper_rng.sh
+Type=oneshot

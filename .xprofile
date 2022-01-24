@@ -1,1 +1,23 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# archon-dotfiles
+# https://github.com/archon-linux/archon-dotfiles
+# @nekwebdev
+# LICENSE: GPLv3
+
+# start lxsession
+lxsession 2>"$HOME"/.local/log/lxsession.log &
+
+# start xsettings daemon
+xsettingsd 2>"$HOME"/.local/log/xsettingsd.log &
+
+# start the hotkeys daemon
+sxhkd 2>"$HOME"/.local/log/sxhkd.log &
+
+# start the picom X compositer
+picom -b --experimental-backends --config "$HOME"/.config/picom/picom.conf 2>"$HOME"/.local/log/picom.log &
+
+# start fullscreen watcher to hide polybar
+# poly_check_fullscreen.sh &
+
+# restore wallpaper, wait 1 sec to let screen get resized , hacky but oh well
+sleep 1 && "$HOME"/.fehbg &

@@ -1,0 +1,81 @@
+# archon-dotfiles
+# https://github.com/archon-linux/archon-dotfiles
+# @nekwebdev
+# LICENSE: GPLv3
+# config: sxhkd
+
+##### These keybinds apply to all window managers ##############################
+
+##### => Super + ... => Applications keybinds  #################################
+
+# open terminal
+super + Return
+    $TERMINAL
+
+# open file manager
+{super + f, super + shift + Return}
+    xdg-open "$HOME"
+
+# open code editor
+super + e
+    $VISUAL
+
+# open web browser
+super + w
+    $BROWSER
+
+# open password
+super + p
+    rofi-pass
+
+# open app launcher
+super + space
+    rofi_launcher.sh
+
+# open lockscreen
+super + Escape
+    system_lock.sh
+
+# show hotkeys help
+super + slash
+    hotkeys_help.sh
+
+##### => Super + Shift + ... => Settings keybings ##############################
+
+# open powermenu
+super + shift + q
+    rofi_powermenu.sh
+
+# set random wallpaper
+super + shift + r
+    wallpaper_rng.sh
+
+# set random wallpaper and generate a color scheme
+super + shift + y
+    wallpaper_rng.sh --flavours
+
+# select wallpaper and color scheme
+super + shift + w
+    wallpaper_set.sh
+
+# select color scheme
+super + shift + c
+    wallpaper_set.sh --only-colors
+
+# open monitor settings
+super + shift + m
+    lxrandr
+
+# open volume mixer
+super + shift + v
+    pavucontrol
+
+# open password manager
+super + shift + p
+    ripasso-cursive
+
+##### => Super + Alt + ... => Reloads keybings #################################
+
+# reload sxkkd
+super + alt + s
+	pkill -USR1 -x sxhkd; notify-send 'sxhkd' 'Reloaded config'

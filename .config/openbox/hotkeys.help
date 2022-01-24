@@ -1,0 +1,19 @@
+##### These keybinds apply to openbox ##########################################
+
+# close openbox active window
+super + q
+
+# reload openbox
+super + alt + r
+
+# change active openbox desktop
+super + control + {Left,Right}
+
+# move window and change active openbox desktop
+super + shift + {Left,Right}
+
+# set active openbox desktop
+super  + {1,2,3,4}
+
+# move window to openbox desktop
+super + shift + {1,2,3,4}

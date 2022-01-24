@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Archon Final Setup
+Categories=System
+Type=Application
+Exec=alacritty -t "Archon Linux final setup" -e archon
+Terminal=false

@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Run wallpaper-rng.service on boot and every {{ wallpaper_timer }}m
+
+[Timer]
+OnBootSec=1s
+OnUnitActiveSec={{ wallpaper_timer }}m
+
+[Install]
+WantedBy=timers.target

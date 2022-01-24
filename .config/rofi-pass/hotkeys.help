@@ -1,0 +1,49 @@
+##### These keybinds apply to rofi-pass ##########################################
+
+# rofi-pass autotype
+alt + 1
+
+# rofi-pass type user
+alt + 2
+
+# rofi-pass type password
+alt + 3
+
+# rofi-pass open url
+alt + 4
+
+# rofi-pass copy username
+alt + u
+
+# rofi-pass copy password
+alt + p
+
+# rofi-pass copy url
+alt + l
+
+# rofi-pass show entry
+alt + o
+
+# rofi-pass in entry type it
+alt + 1
+
+# rofi-pass in entry copy it
+alt + 2
+
+# rofi-pass copy menu
+alt + c
+
+# rofi-pass action menu
+alt + a
+
+# rofi-pass type menu
+alt + t
+
+# rofi-pass help menu
+alt + h
+
+# rofi-pass switch store menu
+alt + x
+
+# rofi-pass new entry menu
+alt + n

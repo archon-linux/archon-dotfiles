@@ -1,0 +1,36 @@
+# ###############################################################################
+# # oh-my-fish
+# ###############################################################################
+---
+- name: Ensure fish is present
+  community.general.pacman:
+    name: fish
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Check if oh-my-fish is installed
+  stat:
+    path: '/etc/omf.installed'
+  register: omf
+  become: true
+
+- name: Clone oh-my-fish repo
+  git:
+    repo: 'https://github.com/oh-my-fish/oh-my-fish'
+    dest: '/tmp/omf'
+    clone: yes
+    accept_hostkey: yes
+    update: no
+  when: not omf.stat.exists
+  become: true
+
+- name: Install oh-my-fish
+  command: /tmp/omf/bin/install -y --offline --noninteractive
+  when: not omf.stat.exists
+
+- name: Mark oh-my-fish installed with /etc/omf.installed
+  file:
+    path: /etc/omf.installed
+    state: touch
+  become: true

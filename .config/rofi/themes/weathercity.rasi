@@ -1,0 +1,5 @@
+@import "weatherapi.rasi"
+ 
+entry {
+    placeholder:                    "Enter city code, leave empty for geoip...";
+}

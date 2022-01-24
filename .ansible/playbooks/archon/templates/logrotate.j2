@@ -1,0 +1,7 @@
+# {{ ansible_managed }}
+
+{{ ansible_env.HOME }}/.local/log/*.log {
+    missingok
+    noolddir
+    rotate 8
+}

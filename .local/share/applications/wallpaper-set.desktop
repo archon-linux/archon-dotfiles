@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Wallpaper
+Categories=Settings
+Icon=preferences-wallpaper
+Type=Application
+Exec=wallpaper_set.sh
+Terminal=false

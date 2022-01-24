@@ -1,0 +1,151 @@
+---
+- name: Archon apply config from vault
+  hosts: local
+  connection: local
+
+  vars_prompt:
+    - name: vault_gpg_passphrase
+      prompt: What is your GPG main key password?
+      private: yes
+      confirm: yes
+
+    - name: vault_gpg_sign_passphrase
+      prompt: What is your GPG signing key password?
+      private: yes
+      confirm: yes
+
+    - name: vault_ssh_passphrase
+      prompt: What is your SSH private key password?
+      private: yes
+      confirm: yes
+
+  tasks:
+    - name: Set WEATHER_APIKEY and WEATHER_CITY from vault
+      lineinfile:
+        path: "{{ ansible_env.HOME }}/.config/environment.d/11-weatherapi.conf"
+        search_string: "{{ item.search }}"
+        line: "{{ item.replace }}"
+        create: yes
+      with_items:
+        - { search: "WEATHER_APIKEY=", replace: 'WEATHER_APIKEY="{{ vault_weatherkey }}"' }
+        - { search: "WEATHER_CITY=", replace: 'WEATHER_CITY="{{ vault_weathercity }}"' }
+      no_log: true
+      when: vault_weatherkey and vault_weathercity
+
+    - name: Tasks for gnupg
+      block:
+        - name: Ensure temp directory exists for our key files
+          tempfile:
+            prefix: "gpg-import"
+            state: directory
+          register: gpg_import_directory
+        
+        - name: Ensure the user's gnupg directory exists
+          command:
+            cmd: "gpg --list-keys"
+            creates: "{{ ansible_env.HOME }}/.config/gnupg"
+
+        - block:
+            - name: Copy main GPG key
+              copy:
+                content: "{{ vault_gpg_private }}"
+                dest: "{{ gpg_import_directory.path }}/private.key"
+                mode:  0600
+              no_log: true
+
+            - name: Import main GPG key
+              command:
+                cmd: "gpg --allow-secret-key-import{% if vault_gpg_passphrase|length > 0 %} --batch --passphrase=\"{{ vault_gpg_passphrase }}\"{% endif %} --import {{ gpg_import_directory.path }}/private.key"
+              register: gpg_private_key_import_status
+              no_log: true
+              ignore_errors: true
+
+            - name: Check if main GPG key imported successfully
+              fail:
+                msg: "An error occurred while importing the private key"
+              when: gpg_private_key_import_status.rc != 0 and "already in secret keyring" not in gpg_private_key_import_status.stderr
+          when: vault_gpg_passphrase and vault_gpg_private
+
+        - block:
+            - name: Copy signing GPG key
+              copy:
+                content: "{{ vault_gpg_sign_private }}"
+                dest: "{{ gpg_import_directory.path }}/private.key"
+                mode:  0600
+              no_log: true
+
+            - name: Import signing GPG key
+              command:
+                cmd: "gpg --allow-secret-key-import{% if vault_gpg_sign_passphrase|length > 0 %} --batch --passphrase=\"{{ vault_gpg_sign_passphrase }}\"{% endif %} --import {{ gpg_import_directory.path }}/private.key"
+              register: gpg_private_key_import_status
+              no_log: true
+              ignore_errors: true
+
+            - name: Check if signing GPG key imported successfully
+              fail:
+                msg: "An error occurred while importing the private key"
+              when: gpg_private_key_import_status.rc != 0 and "already in secret keyring" not in gpg_private_key_import_status.stderr
+          when: vault_gpg_sign_passphrase and vault_gpg_sign_private
+
+        - name: Copy trust
+          copy:
+            content: "{{ vault_gpg_trust }}"
+            dest: "{{ gpg_import_directory.path }}/trust"
+            mode:  0600
+          no_log: true
+
+        - name: Add trust
+          command:
+            cmd: "gpg --import-ownertrust {{ gpg_import_directory.path }}/trust"
+          changed_when: output is defined and output.stdout != ""
+      when: ((vault_gpg_passphrase and vault_gpg_private) or (vault_gpg_sign_passphrase and vault_gpg_sign_private)) and vault_gpg_trust
+
+    - name: Tasks for ssh
+      block:
+        - name: Ensure user ssh directory exists
+          file:
+            path: "{{ ansible_env.HOME }}/.ssh"
+            state: directory
+            mode: 0700
+
+        - name: Create ssh keys and known_hosts from vault
+          copy:
+            content: "{{ item.src }}"
+            dest: "{{ ansible_env.HOME }}/.ssh/{{ item.name }}"
+            mode: 0600
+          no_log: true
+          with_items:
+            - { name: main, src: "{{ vault_ssh_private }}" }
+            - { name: main.pub, src: "{{ vault_ssh_public }}" }
+            - { name: known_hosts, src: "{{ vault_pass_gitfingerprint }}" }
+      when: vault_ssh_private and vault_ssh_public and vault_pass_gitfingerprint
+
+    - name: Check for password store
+      stat:
+        path: "{{ ansible_env.HOME }}/.password-store"
+      register: password_store
+
+    - name: Tasks for password store
+      block:
+        - name: Ensure temp directory exists for our ssh-askpass script
+          tempfile:
+            prefix: "ssh-import"
+            state: directory
+          register: ssh_import_directory
+
+        - name: Create the ssh-askpass script
+          template:
+            src: "ssh-askpass.j2"
+            dest: "{{ ssh_import_directory.path }}/ssh-askpass"
+            mode: 0700
+          no_log: true
+
+        - name: Clone the password store
+          shell: |
+            eval "$(ssh-agent)"
+            ssh-add ~/.ssh/main
+            git clone {{ vault_pass_giturl }} {{ ansible_env.HOME }}/.password-store
+          environment:
+            SSH_ASKPASS: "{{ ssh_import_directory.path }}/ssh-askpass"
+          no_log: true
+      when: not password_store.stat.exists and vault_pass_giturl and vault_ssh_private and vault_ssh_public and vault_ssh_passphrase

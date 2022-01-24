@@ -1,5 +1,5 @@
 #!/bin/bash
 # add specific daemons or apps for openbox
 
-# Start the session manager with the proper environment and session name
-lxsession -e openbox -s openbox &
+# polybar needs to be started by openbox to prevent race conditions at startup
+polybar -r archon --config="$XDG_CONFIG_HOME"/polybar/config.ini 2>"$HOME"/.local/log/polybar.log &

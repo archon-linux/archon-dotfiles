@@ -1,0 +1,17 @@
+[Nemo Action]
+Active=true
+
+Name=Compare with meld
+Name[de]=Mit meld vergleichen
+Name[fr]=Comparer avec meld
+Name[nl]=Vergelijk met meld
+
+Comment=Show differences between files or directories
+Comment[de]=Zeige Unterschiede zwischen Dateien oder Ordnern
+
+Exec=meld %F
+Icon-Name=meld
+
+Selection=M
+
+Extensions=any

@@ -40,8 +40,8 @@
                   'Active' - where the active window is -->
   </placement>
   <theme>
-    <name>colorbamboo</name>
-    <titleLayout>NLIMC</titleLayout>
+    <name>FlatColor</name>
+    <titleLayout>LIMC</titleLayout>
     <!--
       available characters are NDSLIMC, each can occur at most once.
       N: window icon
@@ -55,7 +55,7 @@
     <keepBorder>yes</keepBorder>
     <animateIconify>yes</animateIconify>
     <font place="ActiveWindow">
-      <name>sans</name>
+      <name>FiraCode Nerd Font Mono Medium</name>
       <size>8</size>
       <!-- font size in points -->
       <weight>bold</weight>
@@ -151,7 +151,7 @@
      Many programs reserve space automatically, but you can use this in other
      cases. -->
   <margins>
-    <top>5</top>
+    <top>42</top>
     <bottom>5</bottom>
     <left>5</left>
     <right>5</right>
@@ -176,41 +176,88 @@
   </dock>
   <keyboard>
     <chainQuitKey>C-g</chainQuitKey>
-    <keybind key="C-A-Left">
-      <action name="GoToDesktop"/>
+    <keybind key="W-A-r">
+      <action name="Execute">
+        <command>bash -c "openbox --reconfigure; notify-send 'openbox' 'Reloaded config'"</command>
+      </action>
     </keybind>
-    <keybind key="C-A-Right">
-      <action name="GoToDesktop"/>
+    <keybind key="W-C-Left">
+      <action name="GoToDesktop">
+        <to>left</to>
+        <wrap>yes</wrap>
+      </action>
     </keybind>
-    <keybind key="C-A-Up">
-      <action name="GoToDesktop"/>
+    <keybind key="W-S-Left">
+      <action name="SendToDesktop">
+        <to>left</to>
+        <follow>yes</follow>
+        <wrap>yes</wrap>
+      </action>
     </keybind>
-    <keybind key="C-A-Down">
-      <action name="GoToDesktop"/>
+    <keybind key="W-C-Right">
+      <action name="GoToDesktop">
+        <to>right</to>
+        <wrap>yes</wrap>
+      </action>
     </keybind>
-    <keybind key="S-A-Left">
-      <action name="SendToDesktop"/>
+    <keybind key="W-S-Right">
+      <action name="SendToDesktop">
+        <to>right</to>
+        <follow>yes</follow>
+        <wrap>yes</wrap>
+      </action>
     </keybind>
-    <keybind key="S-A-Right">
-      <action name="SendToDesktop"/>
+    <keybind key="W-1">
+      <action name="GoToDesktop">
+        <to>1</to>
+        <wrap>no</wrap>
+      </action>
     </keybind>
-    <keybind key="S-A-Up">
-      <action name="SendToDesktop"/>
+    <keybind key="W-S-1">
+      <action name="SendToDesktop">
+        <to>1</to>
+        <follow>no</follow>
+        <wrap>no</wrap>
+      </action>
     </keybind>
-    <keybind key="S-A-Down">
-      <action name="SendToDesktop"/>
+    <keybind key="W-2">
+      <action name="GoToDesktop">
+        <to>2</to>
+        <wrap>no</wrap>
+      </action>
     </keybind>
-    <keybind key="W-F1">
-      <action name="GoToDesktop"/>
+    <keybind key="W-S-2">
+      <action name="SendToDesktop">
+        <to>2</to>
+        <follow>no</follow>
+        <wrap>no</wrap>
+      </action>
     </keybind>
-    <keybind key="W-F2">
-      <action name="GoToDesktop"/>
+    <keybind key="W-3">
+      <action name="GoToDesktop">
+        <to>3</to>
+        <wrap>no</wrap>
+      </action>
     </keybind>
-    <keybind key="W-F3">
-      <action name="GoToDesktop"/>
+    <keybind key="W-S-3">
+      <action name="SendToDesktop">
+        <to>3</to>
+        <follow>no</follow>
+        <wrap>no</wrap>
+      </action>
     </keybind>
-    <keybind key="W-F4">
-      <action name="GoToDesktop"/>
+    <keybind key="W-4">
+      <action name="GoToDesktop">
+        <to>4</to>
+        <wrap>no</wrap>
+      </action>
+    </keybind>
+    <keybind key="W-S-4">
+      <action name="SendToDesktop">
+        <to>4</to>
+        <follow>no</follow>
+        <wrap>no</wrap>
+      </action>
     </keybind>
     <keybind key="W-d">
       <action name="ToggleShowDesktop"/>
@@ -237,49 +284,8 @@
         <desktop>yes</desktop>
       </action>
     </keybind>
-    <keybind key="W-S-Right">
-      <action name="DirectionalCycleWindows"/>
-    </keybind>
-    <keybind key="W-S-Left">
-      <action name="DirectionalCycleWindows"/>
-    </keybind>
-    <keybind key="W-S-Up">
-      <action name="DirectionalCycleWindows"/>
-    </keybind>
-    <keybind key="W-S-Down">
-      <action name="DirectionalCycleWindows"/>
-    </keybind>
-    <keybind key="W-Return">
-      <action name="Execute">
-        <command>alacritty</command>
-        <startupnotify>
-          <enabled>yes</enabled>
-          <name>terminal</name>
-        </startupnotify>
-      </action>
-    </keybind>
     <keybind key="W-q">
       <action name="Close"/>
-    </keybind>
-    <keybind key="W-S-r">
-      <action name="Execute">
-        <command>bash -c 'openbox --reconfigure'</command>
-      </action>
-    </keybind>
-    <keybind key="W-e">
-      <action name="Execute">
-        <command>bash -c 'codium'</command>
-      </action>
-    </keybind>
-    <keybind key="W-space">
-      <action name="Execute">
-        <command>bash -c '~/.config/rofi/scripts/rofi_launcher.sh'</command>
-      </action>
-    </keybind>
-    <keybind key="W-A-w">
-      <action name="Execute">
-        <command>bash -c '~/.config/rofi/scripts/rofi_wallpapers.sh'</command>
-      </action>
     </keybind>
     <!--
         +_______+_______+   +_______________+

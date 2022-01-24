@@ -1,0 +1,13 @@
+# ###############################################################################
+# # pacman mirrors
+# ###############################################################################
+---
+- name: Updating pacman list of mirrors in '{{ mirrors_country }}', this can take a few minutes
+  command: reflector --country '{{ mirrors_country }}' -f 30 -l 30 --number 10 --verbose --save /etc/pacman.d/mirrorlist
+  become: true
+
+- name: Update cache and upgrade packages, again this can take a few minutes
+  community.general.pacman:
+    update_cache: yes
+    upgrade: yes
+  become: true

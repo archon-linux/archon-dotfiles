@@ -1,0 +1,40 @@
+---
+vault_weatherkey: "openweathermap.com api key, this is an example on how to set configs"
+vault_weathercity: "openweathermap.com city id"
+vault_gpg_passphrase: "you can be adventurous and also add the pasphrases for all keys, you get a prompt if not set"
+vault_gpg_private: |
+  -----BEGIN PGP PRIVATE KEY BLOCK-----
+
+  gfytfrtydGHErhRehfdERfsHRWEHfdHerrhferheherAGYmNyeXB05f786SDF567chg76f
+  ...
+  ...
+  gfytfrtydGHErhRehfdERfsHRWEHfdHerrhferheherAGYmNyeXB05f786SDF567chg76f
+  =ZuXS
+  -----END PGP PRIVATE KEY BLOCK-----
+  
+vault_gpg_sign_passphrase: "passphrase optional"
+vault_gpg_sign_private: |
+  -----BEGIN PGP PRIVATE KEY BLOCK-----
+
+  gfytfrtydGHErhRehfdERfsHRWEHfdHerrhferheherAGYmNyeXB05f786SDF567chg76f
+  ...
+  ...
+  gfytfrtydGHErhRehfdERfsHRWEHfdHerrhferheherAGYmNyeXB05f786SDF567chg76f
+  =ZuXS
+  -----END PGP PRIVATE KEY BLOCK-----
+  
+vault_gpg_trust: |
+  654C0578654341EAB839665S787D78966A777689:6:
+  DG670578654341EAB83966H689YG78966AHJ67G4:6:
+vault_ssh_passphrase: "optional as well"
+vault_ssh_private: |
+  -----BEGIN OPENSSH PRIVATE KEY-----
+  gfytfrtydGHErhRehfdERfsHRWEHfdHerrhferheherAGYmNyeXB05f786SDF567chg76f
+  ...
+  ...
+  gfytfrtydGHErhRehfdERfsHRWEHfdHerrhferheherAGYmNyeXB05f786SDF567chg76f
+  QeDOrz/HrwDGGR==
+  -----END OPENSSH PRIVATE KEY-----
+  
+vault_ssh_public: "ssh-ed25519 WFDFERNzaCkjhuioygh5ug867g6g696697676g6"
+vault_pass_giturl: "git@server.com:/path/repo.git"

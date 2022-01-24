@@ -1,6 +1,9 @@
 #!/usr/bin/perl
-
-# obmenu-generator - schema file
+# archon-dotfiles
+# https://github.com/archon-linux/archon-dotfiles
+# @nekwebdev
+# LICENSE: GPLv3
+# config: obmenu-generator - schema file
 
 =for comment
 
@@ -33,7 +36,7 @@ our $SCHEMA = [
     {item => ['xdg-open .',       'File Manager', 'system-file-manager']},
     {item => ['alacritty',            'Terminal',     'utilities-terminal']},
     {item => ['xdg-open http://', 'Web Browser',  'web-browser']},
-    {item => ['rofi -no-lazy-grab -show drun',            'Run command',  'system-run']},
+    {item => ['rofi_launcher.sh run',            'Run command',  'system-run']},
 
     {sep => 'Categories'},
 
@@ -68,8 +71,8 @@ our $SCHEMA = [
     {beg => ['Advanced Settings', 'applications-engineering']},
 
       # Configuration files
-      {item => ["$editor ~/.conkyrc",              'Conky RC',    'text-x-generic']},
-      {item => ["$editor ~/.config/tint2/tint2rc", 'Tint2 Panel', 'text-x-generic']},
+      # {item => ["$editor ~/.conkyrc",              'Conky RC',    'text-x-generic']},
+      # {item => ["$editor ~/.config/tint2/tint2rc", 'Tint2 Panel', 'text-x-generic']},
 
       # obmenu-generator category
       {beg => ['Obmenu-Generator', 'accessories-text-editor']},
@@ -99,15 +102,10 @@ our $SCHEMA = [
     {sep => undef},
 
     # Exit and Log Out
-    {beg => ['Log Out', 'gnome-session']},
+    {beg => ['Power', 'gnome-session']},
         ## This uses the 'oblogout' menu
-        {item => ['oblogout', 'OB Logout', 'user_icon']},
-        {sep => undef},
-
-        ## The xscreensaver lock command
-        {item => ['betterlockscreen -', 'Lock', 'system-lock-screen']},
-        {sep => undef},
-
+        # {item => ['oblogout', 'OB Logout', 'user_icon']},
+        # {sep => undef},
         ## Shutdown
         {item => ['systemctl suspend',   'Suspend',   'system-suspend']},
         # {item => ['systemctl hibernate', 'Hibernate', 'system-hibernate']},
@@ -117,7 +115,7 @@ our $SCHEMA = [
 
 
     ## The xscreensaver lock command
-    {item => ['betterlockscreen -l', 'Lock', 'system-lock-screen']},
+    {item => ['system_lock.sh', 'Lock', 'system-lock-screen']},
 
     ## This option uses the default Openbox's "Exit" action
     {exit => ['Exit', 'application-exit']},

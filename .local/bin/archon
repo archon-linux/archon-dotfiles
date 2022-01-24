@@ -1,0 +1,174 @@
+#!/usr/bin/env bash
+# archon-core
+# https://github.com/archon-linux/archon-core
+# @nekwebdev
+# LICENSE: GPLv3
+
+###### => dependencies check ###################################################
+  [[ $(which ansible 2>/dev/null) ]] || { echo -en "\nInstall ansible.";deps=1; }
+if [[ $deps -eq 1 ]]; then
+  { echo -en "\nInstall the above before running this script\n";exit 1; }
+fi
+
+###### => variables ############################################################
+ansibleHome="/home/${SUDO_USER:-$USER}/.ansible"
+ansibleArchon="${ansibleHome}/playbooks/archon"
+ansibleVault="${ansibleHome}/playbooks/vault"
+backtitleText="Archon Linux ansible helper."
+welcomeText="\nPlaybooks located in ~/.ansible/playbooks/archon/. Once you run at least one this helper will not autostart anymore.\nYou should be running all tasks for a fully configured system\n\nYou can run this helper again at anytime using the command 'archon'.\n\n                         Ready to continue?"
+
+playbooks_menu=(dialog --clear --separate-output --title "Archon playbooks" \
+                      --backtitle "$backtitleText Use <SPACE> to select." \
+                      --checklist "Select one or more playbooks to run:" 0 0 0)
+
+playbooks=(all "Play all tasks" on
+        mirrors "Update mirrors and upgrade" off
+        oh-my-fish "Install oh-my-fish" off
+        wallpaper-rng "Random wallpaper timer" off
+        vscodium "Install vscodium extensions" off
+        tldr "Update tealdeer local cache" off
+        flavours "Install base16 themes and templates" off)
+
+[[ -f "$ansibleVault"/vault.yml ]] && playbooks+=( vault "Run vault playbook" off )
+
+###### => functions ############################################################
+# terminal output helpers from https://github.com/Cyclenerd/postinstall
+
+# echo_step() outputs a step collored in cyan, without outputing a newline.
+function echo_step() {
+	tput setaf 6 # 6 = cyan
+	echo -n "$1"
+	tput sgr 0 0  # reset terminal
+}
+
+# # echo_equals() outputs a line with =
+#   seq does not exist under OpenBSD
+function echo_equals() {
+	COUNTER=0
+	while [  $COUNTER -lt "$1" ]; do
+		printf '='
+		(( COUNTER=COUNTER+1 ))
+	done
+}
+
+# echo_title() outputs a title padded by =, in yellow.
+function echo_title() {
+	TITLE=$1
+	NCOLS=$(tput cols)
+	NEQUALS=$(((NCOLS-${#TITLE})/2-1))
+	tput setaf 3 # 3 = yellow
+	echo_equals "$NEQUALS"
+	printf " %s " "$TITLE"
+	echo_equals "$NEQUALS"
+	tput sgr 0 0  # reset terminal
+	echo
+}
+
+function run_playbook() {
+  # check for vault playbook and run it
+  [[ -n "$run_vault" ]] && "$ansibleVault"/run.sh
+  
+  # ask user for extra input
+  extra_vars=""
+  echo
+  echo_title "Running $ansibleArchon/playbook.yml with roles: $1"; echo
+  if [[ ${1} == *"mirrors"* ]]; then
+    echo_step "Leave empty for United States; Enter country for pacman mirrors:"; echo
+    read -r mirrors_country
+    [[ -n $mirrors_country ]] && extra_vars="mirrors_country=${mirrors_country} "
+  fi
+  if [[ ${1} == *"wallpaper-rng"* ]]; then
+    echo_step "Leave empty to disable; How often in minutes should the wallpaper change?"; echo
+    read -r wallpaper_timer
+    extra_vars="wallpaper_timer=${wallpaper_timer} "
+  fi
+
+  # start the playbook with selected roles and extra variables
+  echo "Please enter your password for root privileges"
+  ansible-playbook --extra-vars "${extra_vars}" --tags "$1" \
+                    --ssh-common-args='-o StrictHostKeyChecking=no' \
+                    -K -i "$ansibleArchon"/inventory "$ansibleArchon"/playbook.yml
+  exit_msg
+}
+
+function welcome_yes_no() {
+  dialog --keep-window --title "Archon ansible helper, much wow!" \
+          --backtitle "$backtitleText" --yesno "$welcomeText" 11 84
+}
+
+function exit_msg() {
+  echo_title "You should relog to ensure environment variables are set"
+  echo
+  echo_title "Done! Press any key to close"
+  while true; do
+  if read -r -t 30 -n 1; then
+  exit 0;
+  else
+  echo "still waiting..."
+  fi
+  done
+}
+
+###### => main #################################################################
+
+# ensure ansible tmp is present
+if [[ ! -d "$ansibleHome/tmp" ]]; then
+  mkdir -p "$ansibleHome/tmp"
+  chmod 700 "$ansibleHome/tmp"
+fi
+
+# fix missing theme xsettings entry
+theme=$( gsettings get org.gnome.desktop.interface gtk-theme | sed "s/'//g" )
+[[ -z "$theme" ]] && gsettings set org.gnome.desktop.interface gtk-theme 'FlatColor'
+
+# fix gsettings defaults
+gsettings set org.cinnamon.desktop.default-applications.terminal exec alacritty
+gsettings set org.gnome.desktop.default-applications.terminal exec alacritty
+
+# ensure internet connection
+echo "Checking internet connection"
+nm-online
+
+# parse user choices
+if welcome_yes_no; then
+  choices=$("${playbooks_menu[@]}" "${playbooks[@]}" 2>&1 >/dev/tty)
+  clear
+  _roles=""
+  for choice in $choices
+  do
+    case $choice in
+      all)
+        _roles="mirrors,oh-my-fish,wallpaper-rng,vscodium,tldr,flavours"
+        run_vault="true"
+        run_playbook ${_roles}
+        exit_msg
+        ;;
+      mirrors)
+        _roles="${_roles}mirrors,"
+        ;;
+      oh-my-fish)
+        _roles="${_roles}oh-my-fish,"
+        ;;
+      wallpaper-rng)
+        _roles="${_roles}wallpaper-rng,"
+        ;;
+      vscodium)
+        _roles="${_roles}vscodium,"
+        ;;
+      tldr)
+        _roles="${_roles}tldr,"
+        ;;
+      flavours)
+        _roles="${_roles}flavours,"
+        ;;
+      vault)
+        run_vault="true"
+        ;;
+    esac
+  done
+  if [ "${_roles}" != "" ]; then
+    run_playbook ${_roles}
+  fi
+else
+  exit 0
+fi

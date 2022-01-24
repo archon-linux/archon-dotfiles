@@ -1,0 +1,107 @@
+# archon-dotfiles
+# https://github.com/archon-linux/archon-dotfiles
+# @nekwebdev
+# LICENSE: GPLv3
+# config: flavours
+
+# Commands go through bash
+shell = "bash -c '{}'"
+
+## alacritty
+[[items]]
+file = "~/.config/alacritty/alacritty.yml"
+template = "alacritty"
+
+## fish
+[[items]]
+file = "~/.config/fish/functions/set_colors.fish"
+template = "fish"
+hook = "fish set_colors"
+
+## dunst
+[[items]]
+file = "~/.config/dunst/dunstrc"
+template = "dunst"
+hook = "killall dunst"
+
+## flattercolor icons
+[[items]]
+file = "~/.local/share/icons/flattrcolor/scripts/replace_script.sh"
+template = "icons-flattrcolor"
+[[items]]
+file = "~/.local/share/icons/flattrcolor/scripts/replace_folder_file.sh"
+template = "icons-flattrcolor"
+hook = "~/.local/share/icons/flattrcolor/scripts/replace_script.sh && sleep 0.2s"
+
+## FlatColor GTK theme
+# GTK2
+[[items]]
+file = "~/.local/share/themes/FlatColor/gtk-2.0/gtkrc"
+template = "gtk-flatcolor"
+subtemplate = "gtk-2"
+
+# GTK3
+[[items]]
+file = "~/.local/share/themes/FlatColor/gtk-3.0/gtk.css"
+template = "gtk-flatcolor"
+subtemplate = "gtk-3"
+start= "/* Start flavours */"
+end = "/* End flavours */"
+
+# GTK3.20
+[[items]]
+file = "~/.local/share/themes/FlatColor/gtk-3.20/gtk.css"
+template = "gtk-flatcolor"
+subtemplate = "gtk-3"
+start= "/* Start flavours */"
+end = "/* End flavours */"
+hook = "~/.local/scripts/base16_reloadgtk.sh"
+## end FlatColor GTK theme
+
+# openbox
+[[items]]
+file = "~/.local/share/themes/FlatColor/openbox-3/themerc"
+template = "openbox-flatcolor"
+hook = "openbox --reconfigure"
+
+## polybar
+[[items]]
+file = "~/.config/polybar/colors.ini"
+template = "polybar"
+start = ";; Start flavours"
+end = ";; End flavours"
+hook = "polybar-msg cmd restart"
+
+## rofi
+[[items]]
+file = "~/.config/rofi/themes/colors.rasi"
+template = "rofi"
+subtemplate = "colors"
+start= "/* Start flavours */"
+end = "/* End flavours */"
+
+# vs-code wal theme
+[[items]]
+file = "~/.cache/wal/colors.json"
+template = "vscode-wal"
+rewrite = true
+
+[[items]]
+file = "~/.cache/wal/colors"
+template = "vscode-wal"
+subtemplate = "colors"
+rewrite = true
+
+[[items]]
+file = "~/.cache/wal/colors-tty.sh"
+template = "vscode-wal"
+subtemplate = "tty"
+rewrite = true
+
+## xresources
+[[items]]
+file = "~/.config/xresources/colors"
+template = "xresources"
+start = "! Start flavours"
+end = "! End flavours"
+# hook = "xrdb -merge ~/.Xresources"

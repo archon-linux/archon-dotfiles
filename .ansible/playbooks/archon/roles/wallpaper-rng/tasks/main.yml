@@ -1,0 +1,47 @@
+# ###############################################################################
+# # wallpaper-rng
+# ###############################################################################
+---
+- name: Ensure user systemd directory exist
+  file:
+    path: "{{ ansible_env.HOME }}/.local/share/systemd/user"
+    state: directory
+    mode: '0755'
+
+
+- name: Create wallpaper-rng service and timer from templates
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ ansible_env.HOME }}/.local/share/systemd/user/{{ item }}"
+  with_items:
+    - wallpaper-rng.service
+    - wallpaper-rng.timer
+
+- block:
+  - name: Disable timer
+    systemd:
+      state: stopped
+      enabled: no
+      name: wallpaper-rng.timer
+      scope: user
+  when: wallpaper_timer == "0" or wallpaper_timer == ""
+
+- block:
+  # - name: "Set our timer to {{ wallpaper_timer }}"
+  #   lineinfile:
+  #     path: "{{ ansible_env.HOME }}/.local/share/systemd/user/wallpaper-rng.timer"
+  #     search_string: "{{ item.search }}"
+  #     line: "{{ item.replace }}"
+  #   become: true
+  #   with_items:
+  #     - { search: "OnUnitActiveSec=", replace: "OnUnitActiveSec={{ wallpaper_timer }}m" }
+  #     - { search: "Description=", replace: "Description=Run wallpaper-rng.service on boot and every {{ wallpaper_timer }}m" }
+
+  - name: Ensure wallpaper-rng.timer is running
+    systemd:
+      daemon_reload: yes
+      enabled: yes
+      state: restarted
+      name: wallpaper-rng.timer
+      scope: user
+  when: wallpaper_timer >= "1"

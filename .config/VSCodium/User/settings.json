@@ -1,0 +1,16 @@
+{
+    "workbench.colorTheme": "Wal Bordered",
+    "workbench.sideBar.location": "right",
+    "workbench.iconTheme": "material-icon-theme",
+    "terminal.external.linuxExec": "alacritty",
+    "editor.fontFamily": "'FiraCode Nerd Font Mono'",
+    "editor.fontLigatures": true,
+    "shellcheck.ignorePatterns": {
+        "**/PKGBUILD": true
+    },
+    "shellcheck.exclude": [
+        "SC2155",
+        "SC2063"
+    ],
+    "editor.rulers": [80]
+}
