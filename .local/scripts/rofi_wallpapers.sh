@@ -21,13 +21,16 @@ function display_help() {
               based on the wallpaper or applies a preset scheme."
     echo
     echo "  Usage:"
-    echo "    rofi_wallpaper.sh"
-    echo "    rofi_wallpaper.sh [--silent] [--only-colors]"
+    echo "    rofi_wallpapers.sh"
+    echo "    rofi_wallpapers.sh [--silent] [--only-colors]"
     echo
     echo "  Options:"
     echo "    -h --help         Show this screen."
     echo "    -s --silent       No dunst notifications."
     echo "    -c --only-colors  Only change the color scheme."
+    echo "    --rng             Pick random wallpaper."
+    echo "    --gen             Set a generated theme."
+    echo "    --light           Force a light theme."
     echo
     exit 0
 }
@@ -44,6 +47,15 @@ while (( "$#" )); do
       ;;
     -c|--only-colors)
       skip_wp="true"; shift
+      ;;
+    --rng)
+      rng_wp="true"; shift
+      ;;
+    --gen)
+      gen_wp="true"; shift
+      ;;
+    --light)
+      light_sc="true"; shift
       ;;
     --*|-*=) # unsupported flags
       echo "Error: Unsupported flag $1" >&2; exit 1
@@ -82,25 +94,37 @@ center_location="500x500+${xl}+${yl}"
 ###### => functions ############################################################
 function set_colors() {
   ###### => get the scheme
-  # show a rofi menu to ask for color scheme
-  schemes_dir="${XDG_DATA_HOME}/flavours/base16/schemes"
+  if [[ -z $rng_wp ]]; then
+    # show a rofi menu to ask for color scheme
+    schemes_dir="${XDG_DATA_HOME}/flavours/base16/schemes"
 
-  base16_schemes=$( find "$schemes_dir" -type f -printf "%f\n" \
-                    | sed 's/\.yaml//g' | sed 's/\.yml//g' | sort -u )
+    base16_schemes=$( find "$schemes_dir" -type f -printf "%f\n" \
+                      | sed 's/\.yaml//g' | sed 's/\.yml//g' | sort -u )
 
-  last_scheme=$( cat "$XDG_DATA_HOME"/flavours/lastscheme || echo "")
+    last_scheme=$( cat "$XDG_DATA_HOME"/flavours/lastscheme || echo "")
 
-  flavours_scheme=$( echo -e "$base16_schemes" \
-                  | $rofi_cmd -select "$last_scheme" -p "Choose base16 color scheme" )
+    flavours_scheme=$( echo -e "$base16_schemes" \
+                    | $rofi_cmd -select "$last_scheme" -p "Choose base16 color scheme" )
+  fi
+
+  # random wallpaper, no color gen, stop here
+  [[ -n $rng_wp ]] && [[ -z $gen_wp ]] && return 0
+  # force generated?
+  [[ -n $gen_wp ]] && flavours_scheme="generated"
 
   [[ -z $flavours_scheme ]] && exit 0
 
   ###### => set the scheme
   # if generated, run flavours generate on the first wallpaper
   if [[ "$flavours_scheme" = "generated" ]]; then
-    # show a rofi menu to ask for light or dark theme
-    style=$( echo -e "dark\nlight" | $rofi_cmd -select "dark" -p "Choose style" )
-    [[ -z $style ]] && exit 0
+    if [[ -n $gen_wp ]]; then
+      style="dark"
+      [[ -n $light_sc ]] && style="light"
+    else
+      # show a rofi menu to ask for light or dark theme
+      style=$( echo -e "dark\nlight" | $rofi_cmd -select "dark" -p "Choose style" )
+      [[ -z $style ]] && exit 0
+    fi
     gen_wallpaper="$1"
     [[ -z $gen_wallpaper ]] && \
         gen_wallpaper=$(sed -e "s/.*'\(.*\)'.*/\1/" "$HOME"/.fehbg | sed '2q;d')
@@ -134,9 +158,21 @@ else
 fi
 
 ###### => show a sxiv windows to pick the wallpapers
-[[ -z $silent ]] && notify-send "Wallpapers" "$help_sxiv" -i dialog-information -u critical
-wallpapers_list=$(sxiv -t -o -r -b -g "$center_location" "$path_wallpapers" -N "Wallpaper Picker" | xargs)
-killall dunst
+if [[ -n $rng_wp ]]; then
+  find_wallpapers=$(find "$path_wallpapers" -type f -regex "^.*\.\(png\|jpg\|jpeg\)$")
+  # pick a random wallpaper
+  current=$(sed -e "s/.*'\(.*\)'.*/\1/" "$HOME"/.fehbg | sed '2q;d')
+  wallpapers_list=$(echo "$find_wallpapers" | shuf -n 1)
+
+  # make sure it's not the same one we already have set
+  while [ "$wallpapers_list" = "$current" ]; do
+    wallpapers_list=$(echo "$find_wallpapers" | shuf -n 1)
+  done
+else
+  [[ -z $silent ]] && notify-send "Wallpapers" "$help_sxiv" -i dialog-information -u critical
+  wallpapers_list=$(sxiv -t -o -r -b -g "$center_location" "$path_wallpapers" -N "Wallpaper Picker" | xargs)
+  killall dunst
+fi
 [[ -z $wallpapers_list ]] && exit 0
 
 # make it into an array

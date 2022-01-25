@@ -52,19 +52,19 @@ super + shift + q
 
 # set random wallpaper
 super + shift + r
-    wallpaper_rng.sh
+    rofi_wallpapers.sh --rng
 
 # set random wallpaper and generate a color scheme
 super + shift + y
-    wallpaper_rng.sh --flavours
+    rofi_wallpapers.sh --rng --gen
 
 # select wallpaper and color scheme
 super + shift + w
-    wallpaper_set.sh
+    rofi_wallpapers.sh
 
 # select color scheme
 super + shift + c
-    wallpaper_set.sh --only-colors
+    rofi_wallpapers.sh --only-colors
 
 # open monitor settings
 super + shift + m

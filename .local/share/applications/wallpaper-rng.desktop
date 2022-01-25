@@ -3,5 +3,5 @@ Name=Wallpaper set random
 Categories=Settings
 Icon=preferences-wallpaper
 Type=Application
-Exec=wallpaper_rng.sh
+Exec=rofi_wallpapers.sh --rng --silent
 Terminal=false

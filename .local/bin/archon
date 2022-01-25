@@ -116,7 +116,7 @@ if [[ ! -d "$ansibleHome/tmp" ]]; then
 fi
 
 # notify users of help menu hotkey
-notify-send "Tip" "Open the hotkeys help menu with:\n          Super + /\nor\n      Super + shift + h" -u critical
+notify-send "Tip" "Open hotkeys help menu:\n          Super + /\nor\n      Super + shift + h" -u critical
 
 # fix missing theme xsettings entry
 theme=$( gsettings get org.gnome.desktop.interface gtk-theme | sed "s/'//g" )

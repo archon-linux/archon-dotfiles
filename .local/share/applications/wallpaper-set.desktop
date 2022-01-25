@@ -3,5 +3,5 @@ Name=Wallpaper
 Categories=Settings
 Icon=preferences-wallpaper
 Type=Application
-Exec=wallpaper_set.sh
+Exec=rofi_wallpapers.sh
 Terminal=false

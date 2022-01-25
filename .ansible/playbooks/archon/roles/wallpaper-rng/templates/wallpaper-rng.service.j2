@@ -4,5 +4,5 @@
 Description=Randomly change the current wallpaper
 
 [Service]
-ExecStart={{ ansible_env.HOME }}/.local/scripts/wallpaper_rng.sh
+ExecStart={{ ansible_env.HOME }}/.local/scripts/rofi_wallpapers.sh --rng --silent
 Type=oneshot
