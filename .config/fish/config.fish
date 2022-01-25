@@ -103,6 +103,8 @@ end
 
 
 ### ALIASES ###
+# download extra wallpapers
+alias wallpapers-xtra "git clone https://github.com/archon-linux/archon-xtra-wallpapers.git $WALLPAPERS/extra"
 # spark aliases
 alias cl 'clear; seq 1 (tput cols) | sort -R | spark | lolcat'
 

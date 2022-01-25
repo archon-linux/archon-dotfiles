@@ -166,6 +166,7 @@ for wallpaper in "${wallpapers[@]}"; do
    lock_args="$lock_args -u $wallpaper"
 done
 [[ -z $silent ]] && notify-send "Wallpapers" "Rendering lockscreen effects..." -i "${wallpapers[0]}" -u critical
+# shellcheck disable=SC2086
 betterlockscreen ${lock_args}
 killall dunst
 [[ -z $silent ]] && notify-send "Wallpapers" "Done rendering lockscreen effects" -i "${wallpapers[0]}" -u low

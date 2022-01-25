@@ -25,9 +25,7 @@ playbooks=(all "Play all tasks" on
         mirrors "Update mirrors and upgrade" off
         oh-my-fish "Install oh-my-fish" off
         wallpaper-rng "Random wallpaper timer" off
-        vscodium "Install vscodium extensions" off
-        tldr "Update tealdeer local cache" off
-        flavours "Install base16 themes and templates" off)
+        vscodium "Install vscodium extensions" off)
 
 [[ -f "$ansibleVault"/vault.yml ]] && playbooks+=( vault "Run vault playbook" off )
 
@@ -129,6 +127,9 @@ gsettings set org.gnome.desktop.default-applications.terminal exec alacritty
 echo "Checking internet connection"
 nm-online
 
+# sneaky update of tldr database
+tldr --update > /dev/null 2>&1 &
+
 # parse user choices
 if welcome_yes_no; then
   choices=$("${playbooks_menu[@]}" "${playbooks[@]}" 2>&1 >/dev/tty)
@@ -138,7 +139,7 @@ if welcome_yes_no; then
   do
     case $choice in
       all)
-        _roles="mirrors,oh-my-fish,wallpaper-rng,vscodium,tldr,flavours"
+        _roles="mirrors,oh-my-fish,wallpaper-rng,vscodium"
         run_vault="true"
         run_playbook ${_roles}
         exit_msg
@@ -154,12 +155,6 @@ if welcome_yes_no; then
         ;;
       vscodium)
         _roles="${_roles}vscodium,"
-        ;;
-      tldr)
-        _roles="${_roles}tldr,"
-        ;;
-      flavours)
-        _roles="${_roles}flavours,"
         ;;
       vault)
         run_vault="true"

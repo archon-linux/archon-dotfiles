@@ -20,24 +20,12 @@
         creates: "{{ ansible_env.HOME }}/.config/VSCodium/User/.extensions_installed"
       tags:
         - vscodium
-    
-    - name: Update Tealdeer (tldr) cache
-      command:
-        cmd: tldr --update
-      tags:
-        - tldr
-
-    - name: Update flavours schemes and templates
-      command:
-        cmd: flavours update all
-      tags:
-        - flavours
         
     - name: Tasks for all roles
       block:
         - name: Move archon from autostart
           command:
-            cmd: "mv {{ ansible_env.HOME }}/.config/autostart/archon.desktop {{ ansible_env.HOME }}/.local/share/applications/archon.desktop"
+            cmd: "mv -f {{ ansible_env.HOME }}/.config/autostart/archon.desktop {{ ansible_env.HOME }}/.local/share/applications/archon.desktop"
             removes: "{{ ansible_env.HOME }}/.config/autostart/archon.desktop"
           become: true
 
@@ -58,7 +46,4 @@
         - mirrors
         - oh-my-fish
         - wallpaper-rng
-        - wpgtk
         - vscodium
-        - tldr
-        - flavours
