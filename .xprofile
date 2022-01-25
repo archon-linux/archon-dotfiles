@@ -19,5 +19,8 @@ picom -b --experimental-backends --config "$HOME"/.config/picom/picom.conf 2>"$H
 # start fullscreen watcher to hide polybar
 # poly_check_fullscreen.sh &
 
+# hide mouse when not in use
+unclutter &
+
 # restore wallpaper, wait 1 sec to let screen get resized , hacky but oh well
 sleep 1 && "$HOME"/.fehbg &
