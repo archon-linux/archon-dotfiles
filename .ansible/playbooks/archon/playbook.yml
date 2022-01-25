@@ -23,12 +23,6 @@
         
     - name: Tasks for all roles
       block:
-        - name: Move archon from autostart
-          command:
-            cmd: "mv -f {{ ansible_env.HOME }}/.config/autostart/archon.desktop {{ ansible_env.HOME }}/.local/share/applications/archon.desktop"
-            removes: "{{ ansible_env.HOME }}/.config/autostart/archon.desktop"
-          become: true
-
         - name: Ensure logrotate is present
           community.general.pacman:
             name: logrotate

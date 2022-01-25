@@ -122,6 +122,9 @@ notify-send "Tip" "Open hotkeys help menu:\n          Super + /\nor\n      Super
 theme=$( gsettings get org.gnome.desktop.interface gtk-theme | sed "s/'//g" )
 [[ -z "$theme" ]] && gsettings set org.gnome.desktop.interface gtk-theme 'FlatColor'
 
+# remove archon.desktop from autostart
+rm -f "$HOME"/.config/autostart/archon.desktop
+
 # fix gsettings defaults
 gsettings set org.cinnamon.desktop.default-applications.terminal exec alacritty
 gsettings set org.gnome.desktop.default-applications.terminal exec alacritty
