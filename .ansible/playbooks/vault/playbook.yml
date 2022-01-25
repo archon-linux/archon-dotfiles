@@ -144,7 +144,7 @@
           shell: |
             eval "$(ssh-agent)"
             ssh-add ~/.ssh/main
-            git clone {{ vault_pass_giturl }} {{ ansible_env.HOME }}/.password-store
+            git clone {{ vault_pass_giturl }} {{ ansible_env.HOME }}/.local/share/password-store
           environment:
             SSH_ASKPASS: "{{ ssh_import_directory.path }}/ssh-askpass"
           no_log: true
