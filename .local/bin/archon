@@ -115,6 +115,9 @@ if [[ ! -d "$ansibleHome/tmp" ]]; then
   chmod 700 "$ansibleHome/tmp"
 fi
 
+# notify users of help menu hotkey
+notify-send "Tip" "Open the hotkeys help menu with:\n          Super + /\nor\n      Super + shift + h" -u critical
+
 # fix missing theme xsettings entry
 theme=$( gsettings get org.gnome.desktop.interface gtk-theme | sed "s/'//g" )
 [[ -z "$theme" ]] && gsettings set org.gnome.desktop.interface gtk-theme 'FlatColor'

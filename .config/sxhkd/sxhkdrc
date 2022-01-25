@@ -28,16 +28,20 @@ super + w
 super + p
     rofi-pass
 
-# open app launcher
+# open desktop app launcher
 super + space
     rofi_launcher.sh
+
+# open app launcher
+super + alt + space
+    rofi_launcher.sh run
 
 # open lockscreen
 super + Escape
     system_lock.sh
 
 # show hotkeys help
-super + slash
+{super + slash, super + shift + h}
     hotkeys_help.sh
 
 ##### => Super + Shift + ... => Settings keybings ##############################
